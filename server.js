@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 
 
-
+app.set('jwtSecret', CONFIG.JWT_SECRET );
 
 app.get('/', (req, res) => {
 	res.send('App route working perfectly');
