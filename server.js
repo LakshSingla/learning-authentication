@@ -6,8 +6,9 @@ const _ 	   = require('lodash');
 const bcrypt       = require('bcrypt');
 
 //Requiring the local modules
-const CONFIG       = require('./config.js');
-const User         = require('./models/user.js');
+const CONFIG       = require('./config');
+const User         = require('./models/user');
+const authenticate = require('./authenticate')
 
 //Configuring the required variables for the app
 const app = express();
@@ -96,12 +97,25 @@ app.post('/login', (req, res) => {
 				return;
 			}
 			if(isValid){
-				res.send({status : 'passed', result: result});
+				authenticate.supplyToken({
+					id: result._id
+				}).then(function(token){
+					res.send({
+						status : "passed",
+						token  :  token
+					});
+				}).catch(function(err){
+					res.status(404).send({
+						status : "Failed",
+						msg    : "Unable to supply the JWT"
+					});
+				});
 				return;
 			}
 		}));
 	});
 });
+
 	
 app.listen(CONFIG.PORT, function(){
 	console.log('App listening on http://localhost:'+CONFIG.PORT);
