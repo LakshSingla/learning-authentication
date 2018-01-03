@@ -116,6 +116,21 @@ app.post('/login', (req, res) => {
 	});
 });
 
+//Protected routes, require the corresponding JWT in order to access them
+
+app.use(function(req, res, next){
+	let token = req.header('x-auth-jwt');
+	authenticate.verifyToken(token).then(function(decoded){
+		req.body.id = decoded.id;
+		next();
+	}).catch(function(err){
+		res.status(404).send({
+			status   : "failed",
+			msg      : "Unable to authorise the token provided"
+		});
+	});	
+});
+
 	
 app.listen(CONFIG.PORT, function(){
 	console.log('App listening on http://localhost:'+CONFIG.PORT);
