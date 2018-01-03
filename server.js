@@ -124,11 +124,23 @@ app.use(function(req, res, next){
 		req.body.id = decoded.id;
 		next();
 	}).catch(function(err){
+		if(err.name === "TokenExpiredError"){
+			res.status(404).send({
+				status  : "failed",
+				msg     : "JWT expired, please login again to get a new token"
+			});
+			return;
+		}
 		res.status(404).send({
-			status   : "failed",
-			msg      : "Unable to authorise the token provided"
-		});
+				status  : "failed",
+				msg     : "Unable to authorise the token please login again"
+			});
+		
 	});	
+});
+
+app.use('/test-auth', function(req, res){
+	res.send(req.body.id);
 });
 
 	

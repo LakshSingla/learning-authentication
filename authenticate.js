@@ -4,7 +4,7 @@ const {JWT_SECRET} = require('./config');
 
 module.exports.supplyToken = function(payload){
 	return new Promise(function(resolve, reject){
-		jwt.sign(payload, JWT_SECRET, function(err, token){
+		jwt.sign(payload, JWT_SECRET,{expiresIn : "1d"}, function(err, token){
 			if(err){
 				reject(err);
 			}
