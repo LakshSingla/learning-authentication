@@ -8,6 +8,8 @@ const bcrypt       = require('bcrypt');
 //Requiring the local modules
 const CONFIG       = require('./config');
 const User         = require('./models/user');
+const Post         = require('./models/post');
+const Comment      = require('./models/comment');
 const authenticate = require('./authenticate')
 
 //Configuring the required variables for the app
@@ -139,10 +141,34 @@ app.use(function(req, res, next){
 	});	
 });
 
+//Test route for checking the working of jwt
 app.use('/test-auth', function(req, res){
 	res.send(req.body.id);
 });
 
+app.post("/me/post", function(req, res){
+	let yankedData = _.pick(req.body, ["title","body"]);
+	if(!_.has(yankedData, 'body') || !_.has(yankedData, 'title'))
+		return res.status(401).send({status: 'Failed', msg: 'Insufficient data passed in body'});
+	User.findById(req.body.id).then(function(user){
+		if(!user){
+			//Error handling for if the user is not found	
+		}	
+		var post = new Post({
+			title  : req.body.title,
+			body   : req.body.body,
+			author : user._id
+		});
+		post.save().then(function(doc){
+			res.send(doc);
+		}).catch(function(err){
+			console.log(err);
+			//Error handling if the document is unable to be saved
+		});
+	}).catch(function(err){
+			//Error handling if the query is unsuccessful	
+	});
+});
 	
 app.listen(CONFIG.PORT, function(){
 	console.log('App listening on http://localhost:'+CONFIG.PORT);
