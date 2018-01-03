@@ -25,6 +25,8 @@ let userSchema = mongoose.Schema({
 		lowercase    : true,
 		validator    : validator.isEmail
 	}
+}, {
+	runSettersOnQuery    : true
 });
 
 userSchema.pre('save', function(next){

@@ -3,6 +3,7 @@ const express      = require('express');
 const mongoose     = require('mongoose');
 const bodyParser   = require('body-parser');
 const _ 	   = require('lodash');
+const bcrypt       = require('bcrypt');
 
 //Requiring the local modules
 const CONFIG       = require('./config.js');
@@ -55,6 +56,53 @@ app.post('/register', (req, res) => {
 	//res.send("This route is working fine too");
 });
 
+app.post('/login', (req, res) => {
+	yankedData = _.pick(req.body, ['password', 'email']);
+
+	if(!_.has(yankedData, 'password') || !_.has(yankedData, 'email'))
+		return res.status(401).send({status: 'Failed', msg: 'Insufficient data passed in body'});
+	
+	User.findOne({
+		email : req.body.email
+	}, function(err, result){
+		if(err){
+			res.status(404).send({
+				status : 'failed',
+				msg    : 'Unable to fulfil the query'
+			});
+			throw err;
+			return;
+		}
+		if(!result){
+			res.status(404).send({
+				status : 'failed',
+				msg    : 'Unable to find the user'
+			});
+			return;
+		}
+		if(bcrypt.compare(req.body.password, result.password, function(err, isValid){
+			if(err){
+				res.status(404).send({
+					status : 'failed',
+					msg    : 'Unable to hash the password'
+				});
+				return;
+			}	
+			if(!isValid){
+				res.status(404).send({
+					status : 'failed',
+					msg    : 'Login failed, wrong password supplied'
+				});
+				return;
+			}
+			if(isValid){
+				res.send({status : 'passed', result: result});
+				return;
+			}
+		}));
+	});
+});
+	
 app.listen(CONFIG.PORT, function(){
 	console.log('App listening on http://localhost:'+CONFIG.PORT);
 });
