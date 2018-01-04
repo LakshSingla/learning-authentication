@@ -6,7 +6,7 @@ const Post         = require('./post');
 const Schema       = mongoose.Schema;
 
 let commentSchema  = new Schema({
-	originalPost   : {
+	post   : {
 		type   : Schema.ObjectId, 
 		ref    : 'Post'
 	},
