@@ -25,7 +25,13 @@ module.exports.postCommentByPostId =  function (req, res) {
                 $push : {
                     comments : doc._id
                 }
-            }).then(function(user){
+            }).then(function(){
+                return Post.findByIdAndUpdate(comment.post, {
+                    $push : {
+                        comments : doc._id
+                    }
+                });
+            }).then(function(){
                 res.send({
                     status  : "passed",
                     doc     : doc

@@ -12,10 +12,10 @@ let postSchema    = new Schema({
 	},
 	title  : String,
 	body   : String,
-	comment: {
+	comments: [{
 		type: Schema.ObjectId,
 		ref : 'Comment'
-	},
+	}],
 	updatedAt: Date
 });
 
