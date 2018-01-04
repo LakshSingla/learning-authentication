@@ -118,6 +118,24 @@ app.post('/login', function(req, res) {
 	});
 });
 
+app.get('/post/:id', function(req, res){
+    // console.log(req.params.id);
+    Post.findById(req.params.id).then(function (post) {
+        if(!post){
+            //Error handling if the post was not found
+            return;
+        }
+        res.send({
+            status : "passed",
+            post   : post
+        });
+    }).catch(function (err) {
+        //Error handling if the query fails
+        return;
+    });
+
+});
+
 //Protected routes, require the corresponding JWT in order to access them
 
 app.use(function(req, res, next){
