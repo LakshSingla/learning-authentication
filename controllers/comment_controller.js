@@ -1,5 +1,6 @@
 const _        = require('lodash');
 
+const User     = require('./../models/user');
 const Post     = require('./../models/post');
 const Comment  = require('./../models/comment');
 
@@ -20,10 +21,16 @@ module.exports.postCommentByPostId =  function (req, res) {
             body   : req.body.body
         });
         comment.save().then(function (doc) {
-            res.send({
-                status  : "passed",
-                doc     : doc
-            });
+            User.findByIdAndUpdate(req.body.id, {
+                $push : {
+                    comments : doc._id
+                }
+            }).then(function(user){
+                res.send({
+                    status  : "passed",
+                    doc     : doc
+                });
+            }).catch();
             return;
         }).catch(function (err) {
             //Error handling if the post is unable to be saved

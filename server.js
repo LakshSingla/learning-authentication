@@ -7,10 +7,10 @@ const _ 	       = require('lodash');
 
 //Requiring the local modules
 const CONFIG       = require('./config');
-const User         = require('./models/user');
-const Post         = require('./models/post');
-const Comment      = require('./models/comment');
-const authenticate = require('./authenticate');
+// const User         = require('./models/user');
+// const Post         = require('./models/post');
+// const Comment      = require('./models/comment');
+// const authenticate = require('./authenticate');
 const auth_middleware = require('./auth-middleware');
 const userVerifyControllers  = require('./controllers/user_verify');
 const postControllers = require('./controllers/post_controller');

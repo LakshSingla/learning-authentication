@@ -1,5 +1,6 @@
 const _        = require('lodash');
 
+const User     = require('./../models/user');
 const Post     = require('./../models/post');
 
 module.exports.getPostById = function(req, res){
@@ -29,7 +30,17 @@ module.exports.postMyPost = function(req, res){
         author : req.body.id
     });
     post.save().then(function(doc){
-        res.send(doc);
+        User.findByIdAndUpdate(req.body.id, {
+            $push : {
+                posts : doc._id
+            }
+        }, function(err, user){
+            if(err) {
+                console.log(err);
+                return;
+            }
+            res.send(doc);
+        });
     }).catch(function(err){
         console.log(err);
         //Error handling if the document is unable to be saved
@@ -37,3 +48,4 @@ module.exports.postMyPost = function(req, res){
         //Error handling if the query is unsuccessful
     });
 };
+
