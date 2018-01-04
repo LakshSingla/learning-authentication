@@ -4,7 +4,10 @@ const bcrypt      = require('bcrypt');
 
 const 
      {SALT_ROUNDS}= require('./../config');
+const Post        = require('./post');
+const Comment     = require('./comment');
 
+let Schema     = mongoose.Schema;
 let userSchema = mongoose.Schema({
 	firstName : {
 		type         : String, 
@@ -24,7 +27,15 @@ let userSchema = mongoose.Schema({
 		unique       : true,
 		lowercase    : true,
 		validator    : validator.isEmail
-	}
+	},
+	posts	  : [{
+		type		 : Schema.ObjectId,
+		ref   		 : 'Post'
+	}],
+	comments  : [{
+		type         : Schema.ObjectId,
+		ref          : 'Comment'
+	}]
 }, {
 	runSettersOnQuery    : true
 });
