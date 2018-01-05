@@ -2,19 +2,15 @@
 const express      = require('express');
 const mongoose     = require('mongoose');
 const bodyParser   = require('body-parser');
-const _ 	       = require('lodash');
-// const bcrypt       = require('bcrypt');
 
 //Requiring the local modules
 const CONFIG       = require('./config');
-// const User         = require('./models/user');
-// const Post         = require('./models/post');
-// const Comment      = require('./models/comment');
-// const authenticate = require('./authenticate');
 const auth_middleware = require('./auth-middleware');
 const userVerifyControllers  = require('./controllers/user_verify');
+const userControllers = require('./controllers/user_controller');
 const postControllers = require('./controllers/post_controller');
 const commentControllers = require('./controllers/comment_controller');
+
 //Configuring the required variables for the app
 const app = express();
 mongoose.Promise = global.Promise;
@@ -38,6 +34,10 @@ app.post('/login', userVerifyControllers.login_controller);
 
 app.get('/post/:id', postControllers.getPostById);
 
+app.get('/comment/:id', commentControllers.getCommentById);
+
+app.get('/user/:id', userControllers.getUserById);
+
 //Protected routes, require the corresponding JWT in order to access them
 
 app.use(auth_middleware);
@@ -50,6 +50,14 @@ app.use('/test-auth', function(req, res){
 app.post("/me/post", postControllers.postMyPost);
 
 app.post('/post/:id/comment', commentControllers.postCommentByPostId);
+
+app.patch('/post/:id', postControllers.updatePostById);
+
+app.delete('/post/:id', postControllers.deletePostById);
+
+app.patch('/comment/:id', commentControllers.updateCommentById);
+
+app.delete('/comment/:id', commentControllers.deleteCommentById);
 
 app.listen(CONFIG.PORT, function(){
 	console.log('App listening on http://localhost:'+CONFIG.PORT);

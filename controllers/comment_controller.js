@@ -47,3 +47,44 @@ module.exports.postCommentByPostId =  function (req, res) {
         return;
     });
 };
+
+module.exports.getCommentById = function (req, res) {
+    Comment.findById(req.params.id).then(function(comment){
+        if(!comment){
+            //Error handling when the comment is not found
+            return;
+        }
+        res.send({
+            status  : "passed",
+            comment : comment
+        });
+        return;
+    }).catch(function (err) {
+        //Error handling if the query fails to run
+    });
+};
+
+module.exports.updateCommentById = function (req, res) {
+
+};
+
+module.exports.deleteCommentById = function (req, res) {
+    Comment.findById(req.params.id).then(function(comment){
+        if(!comment){
+            //Error handling if the comment is not found
+            return;
+        }
+        if(comment.author !== req.body.id) {
+            //Error handling if the user is trying to removet others post
+            return;
+        }
+        comment.remove();
+        res.send({
+            msg: "Successfully deleted the comment"
+        });
+        return;
+    }).catch(function (err) {
+        //Error handling if there is any error in query
+        res.send(err);
+    });
+};

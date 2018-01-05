@@ -5,7 +5,7 @@ const Post     = require('./../models/post');
 
 module.exports.getPostById = function(req, res){
     // console.log(req.params.id);
-    Post.findById(req.params.id).then(function (post) {
+    Post.findById(req.params.id).populate('comments').then(function (post) {
         if(!post){
             //Error handling if the post was not found
             return;
@@ -49,3 +49,10 @@ module.exports.postMyPost = function(req, res){
     });
 };
 
+module.exports.updatePostById = function (req, res) {
+    res.send('Hello there');
+};
+
+module.exports.deletePostById = function () {
+
+};
